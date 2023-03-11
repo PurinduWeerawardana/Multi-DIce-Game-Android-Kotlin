@@ -1,34 +1,49 @@
 package com.example.dicegame
 
-import androidx.appcompat.app.AppCompatActivity
+import android.annotation.SuppressLint
+import android.app.AlertDialog
+import android.content.DialogInterface
+import android.graphics.Color
 import android.os.Bundle
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.os.Handler
+import android.os.Looper
+import android.view.Gravity
+import android.view.KeyEvent
+import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
+import java.util.*
 
+@SuppressLint("UseSwitchCompatOrMaterialCode")
 class GameActivity : AppCompatActivity() {
     private val userDiceList = mutableListOf<Dice>()
-    private val computerDiceList = mutableListOf<Dice>()
+    private val userDiceSwitchesList = mutableListOf<Switch>()
+    private val robotDiceList = mutableListOf<Dice>()
     private var userTotal: Int = 0
-    private var computerTotal: Int = 0
+    private var robotTotal: Int = 0
     private var throwCount: Int = 0
-    private lateinit var playerTotalText: TextView
-    private lateinit var computerTotalText: TextView
-    private lateinit var playerScoreText: TextView
-    private lateinit var computerScoreText: TextView
+    private val maxThrowCount: Int = 3
+    private lateinit var userTotalText: TextView
+    private lateinit var robotTotalText: TextView
+    private lateinit var userScoreText: TextView
+    private lateinit var robotScoreText: TextView
     private lateinit var userDice1: ImageView
+    private lateinit var userDice1Switch: Switch
     private lateinit var userDice2: ImageView
+    private lateinit var userDice2Switch: Switch
     private lateinit var userDice3: ImageView
+    private lateinit var userDice3Switch: Switch
     private lateinit var userDice4: ImageView
+    private lateinit var userDice4Switch: Switch
     private lateinit var userDice5: ImageView
-    private lateinit var computerDice1: ImageView
-    private lateinit var computerDice2: ImageView
-    private lateinit var computerDice3: ImageView
-    private lateinit var computerDice4: ImageView
-    private lateinit var computerDice5: ImageView
+    private lateinit var userDice5Switch: Switch
+    private lateinit var robotDice1: ImageView
+    private lateinit var robotDice2: ImageView
+    private lateinit var robotDice3: ImageView
+    private lateinit var robotDice4: ImageView
+    private lateinit var robotDice5: ImageView
     private lateinit var throwButton: Button
     private lateinit var scoreButton: Button
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +55,7 @@ class GameActivity : AppCompatActivity() {
         // Initialize the dice lists
         for (i in 1..5) {
             userDiceList.add(Dice())
-            computerDiceList.add(Dice())
+            robotDiceList.add(Dice())
         }
 
         // Set the initial dice images
@@ -48,52 +63,63 @@ class GameActivity : AppCompatActivity() {
 
         // throwButton click listener
         throwButton.setOnClickListener {
-            if (throwCount == 3) {
-                scoreButton.performClick()
-                Toast.makeText(this, "You have used all optional rolls. Score automatically updated.", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
             throwDices()
             showDiceImages()
             userTotal = 0
             for (dice in userDiceList) {
                 userTotal += dice.getDiceValue()
             }
-            computerTotal = 0
-            for (dice in computerDiceList) {
-                computerTotal += dice.getDiceValue()
+            robotTotal = 0
+            for (dice in robotDiceList) {
+                robotTotal += dice.getDiceValue()
             }
-            playerTotalText.text = userTotal.toString()
-            computerTotalText.text = computerTotal.toString()
+            userTotalText.text = userTotal.toString()
+            robotTotalText.text = robotTotal.toString()
+            if (throwCount == maxThrowCount) {
+                throwButton.isEnabled = false
+                Handler(Looper.getMainLooper()).postDelayed(Runnable {
+                    scoreButton.performClick()
+                }, 4000)
+                Toast.makeText(this, "Optional rolls are over. Score will update automatically.", Toast.LENGTH_SHORT).show()
+            } else{
+                throwButton.text = "Throw (${throwCount + 1})"
+            }
         }
 
         // scoreButton click listener
         scoreButton.setOnClickListener {
-            updateScore(userTotal, computerTotal)
+            updateScore(userTotal, robotTotal)
+            throwButton.isEnabled = false
             userTotal = 0
-            computerTotal = 0
-            playerTotalText.text = userTotal.toString()
-            computerTotalText.text = computerTotal.toString()
+            robotTotal = 0
+            userTotalText.text = userTotal.toString()
+            robotTotalText.text = robotTotal.toString()
             throwCount = 0
+            throwButton.text = "Throw"
             throwButton.isEnabled = true
         }
     }
 
     private fun initializeViews() {
-        playerTotalText = findViewById(R.id.player_total_text)
-        computerTotalText = findViewById(R.id.robot_total_text)
-        playerScoreText = findViewById(R.id.player_score_text)
-        computerScoreText = findViewById(R.id.robot_score_text)
-        userDice1 = findViewById(R.id.user_dice_image_one)
-        userDice2 = findViewById(R.id.user_dice_image_two)
-        userDice3 = findViewById(R.id.user_dice_image_three)
-        userDice4 = findViewById(R.id.user_dice_image_four)
-        userDice5 = findViewById(R.id.user_dice_image_five)
-        computerDice1 = findViewById(R.id.robot_dice_image_one)
-        computerDice2 = findViewById(R.id.robot_dice_image_two)
-        computerDice3 = findViewById(R.id.robot_dice_image_three)
-        computerDice4 = findViewById(R.id.robot_dice_image_four)
-        computerDice5 = findViewById(R.id.robot_dice_image_five)
+        userScoreText = findViewById(R.id.user_score_text)
+        robotScoreText = findViewById(R.id.robot_score_text)
+        robotTotalText = findViewById(R.id.robot_total_text)
+        robotDice1 = findViewById(R.id.robot_dice_image_1)
+        robotDice2 = findViewById(R.id.robot_dice_image_2)
+        robotDice4 = findViewById(R.id.robot_dice_image_4)
+        robotDice3 = findViewById(R.id.robot_dice_image_3)
+        robotDice5 = findViewById(R.id.robot_dice_image_5)
+        userTotalText = findViewById(R.id.user_total_text)
+        userDice1 = findViewById(R.id.user_dice_image_1)
+        userDice1Switch = findViewById(R.id.user_dice_switch_1)
+        userDice2 = findViewById(R.id.user_dice_image_2)
+        userDice2Switch = findViewById(R.id.user_dice_switch_2)
+        userDice3 = findViewById(R.id.user_dice_image_3)
+        userDice3Switch = findViewById(R.id.user_dice_switch_3)
+        userDice4 = findViewById(R.id.user_dice_image_4)
+        userDice4Switch = findViewById(R.id.user_dice_switch_4)
+        userDice5 = findViewById(R.id.user_dice_image_5)
+        userDice5Switch = findViewById(R.id.user_dice_switch_5)
         throwButton = findViewById(R.id.throw_button)
         scoreButton = findViewById(R.id.score_button)
     }
@@ -104,31 +130,92 @@ class GameActivity : AppCompatActivity() {
         userDice3.setImageResource(userDiceList[2].getDiceImage())
         userDice4.setImageResource(userDiceList[3].getDiceImage())
         userDice5.setImageResource(userDiceList[4].getDiceImage())
-        computerDice1.setImageResource(computerDiceList[0].getDiceImage())
-        computerDice2.setImageResource(computerDiceList[1].getDiceImage())
-        computerDice3.setImageResource(computerDiceList[2].getDiceImage())
-        computerDice4.setImageResource(computerDiceList[3].getDiceImage())
-        computerDice5.setImageResource(computerDiceList[4].getDiceImage())
+        robotDice1.setImageResource(robotDiceList[0].getDiceImage())
+        robotDice2.setImageResource(robotDiceList[1].getDiceImage())
+        robotDice3.setImageResource(robotDiceList[2].getDiceImage())
+        robotDice4.setImageResource(robotDiceList[3].getDiceImage())
+        robotDice5.setImageResource(robotDiceList[4].getDiceImage())
     }
 
     private fun throwDices() {
-        throwCount++
-        for (i in 0..4) {
-            userDiceList[i].rollDice()
-            computerDiceList[i].rollDice()
+        if (throwCount == 0){
+            for (i in 0..4) {
+                userDiceList[i].rollDice()
+                robotDiceList[i].rollDice()
+            }
+        } else {
+            if (userDice1Switch.isChecked) {
+                userDice1Switch.isChecked = false
+            } else {
+                userDiceList[0].rollDice()
+            }
+            if (userDice2Switch.isChecked) {
+                userDice2Switch.isChecked = false
+            } else {
+                userDiceList[1].rollDice()
+            }
+            if (userDice3Switch.isChecked) {
+                userDice3Switch.isChecked = false
+            } else {
+                userDiceList[2].rollDice()
+            }
+            if (userDice4Switch.isChecked) {
+                userDice4Switch.isChecked = false
+            } else {
+                userDiceList[3].rollDice()
+            }
+            if (userDice5Switch.isChecked) {
+                userDice5Switch.isChecked = false
+            } else {
+                userDiceList[4].rollDice()
+            }
         }
+        throwCount++
     }
 
     private fun updateScore(playerTotal: Int, computerTotal: Int) {
-        playerScoreText.text = playerScoreText.text.toString().toInt().plus(playerTotal).toString()
-        if (playerScoreText.text.toString().toInt() >= 101) {
-            Toast.makeText(this, "You have won the game!", Toast.LENGTH_LONG).show()
-            finish()
+        userScoreText.text = userScoreText.text.toString().toInt().plus(playerTotal).toString()
+        if (userScoreText.text.toString().toInt() >= 101) {
+            val alertDialogBuilder = AlertDialog.Builder(this)
+            alertDialogBuilder.setTitle("Game Over!")
+            alertDialogBuilder.setMessage("You have won the game!")
+            alertDialogBuilder.setPositiveButton("OK", null)
+            alertDialogBuilder.setOnKeyListener(
+                DialogInterface.OnKeyListener { dialog, keyCode, event ->
+                if (keyCode == KeyEvent.KEYCODE_BACK) {
+                    dialog.dismiss()
+                    finish()
+                    return@OnKeyListener true
+                }
+                false
+                }
+            )
+            // TODO: Change the color of the dialog box
+            // TODO: finish the game
+            val alertDialog = alertDialogBuilder.create()
+            alertDialog.show()
+            return@updateScore
         }
-        computerScoreText.text = computerScoreText.text.toString().toInt().plus(computerTotal).toString()
-        if (computerScoreText.text.toString().toInt() >= 101) {
-            Toast.makeText(this, "You have lost the game!", Toast.LENGTH_LONG).show()
-            finish()
+        robotScoreText.text = robotScoreText.text.toString().toInt().plus(computerTotal).toString()
+        if (robotScoreText.text.toString().toInt() >= 101) {
+            val builder = AlertDialog.Builder(this)
+            with(builder) {
+                setTitle("Game Over!")
+                setMessage("You have lost the game!")
+                setPositiveButton("OK", null)
+                setNegativeButton("CANCEL", null)
+                setNeutralButton("NEUTRAL", null)
+            }
+            val alertDialog = builder.create()
+            alertDialog.show()
+
+            val button = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE)
+            with(button) {
+                setBackgroundColor(Color.RED)
+                setPadding(0, 0, 20, 0)
+                setTextColor(Color.WHITE)
+            }
+            //finish()
         }
         resetDices()
     }
@@ -136,9 +223,14 @@ class GameActivity : AppCompatActivity() {
     private fun resetDices() {
         for (i in 0..4) {
             userDiceList[i].resetDice()
-            computerDiceList[i].resetDice()
+            robotDiceList[i].resetDice()
         }
         showDiceImages()
+        userDice1Switch.isChecked = false
+        userDice2Switch.isChecked = false
+        userDice3Switch.isChecked = false
+        userDice4Switch.isChecked = false
+        userDice5Switch.isChecked = false
     }
 
 }

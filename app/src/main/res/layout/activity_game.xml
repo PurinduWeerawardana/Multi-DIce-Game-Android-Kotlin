@@ -16,41 +16,27 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TableRow
-            android:id="@+id/player_id_row"
+            android:id="@+id/robot_name_row"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal|center_vertical"
             android:gravity="center_horizontal|center_vertical">
 
             <TextView
-                android:id="@+id/player_id_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="You"
-                android:textAlignment="center" />
-
-            <TextView
-                android:id="@+id/device_id_text"
+                android:id="@+id/robot_name_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Robot"
-                android:textAlignment="center" />
-
+                android:textAlignment="center"
+                android:textSize="20sp" />
         </TableRow>
 
         <TableRow
-            android:id="@+id/player_total_row"
+            android:id="@+id/robot_total_row"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal|center_vertical"
+            android:layout_gravity="center|clip_vertical|center_horizontal|center_vertical|fill_vertical"
             android:gravity="center_horizontal|center_vertical">
-
-            <TextView
-                android:id="@+id/player_total_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="ROLL"
-                android:textAlignment="center" />
 
             <TextView
                 android:id="@+id/robot_total_text"
@@ -62,195 +48,284 @@
         </TableRow>
 
         <TableRow
-            android:id="@+id/first_dices_row"
+            android:id="@+id/first_dices_row_robot"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal|center_vertical"
             android:gravity="center_horizontal|center_vertical">
 
             <ImageView
-                android:id="@+id/user_dice_image_one"
+                android:id="@+id/robot_dice_image_1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 app:srcCompat="@drawable/dice_face_roll"
                 tools:srcCompat="@drawable/dice_face_roll" />
 
             <ImageView
-                android:id="@+id/robot_dice_image_one"
+                android:id="@+id/robot_dice_image_2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                app:srcCompat="@drawable/dice_face_roll"
+                tools:srcCompat="@drawable/dice_face_roll" />
+
+            <ImageView
+                android:id="@+id/robot_dice_image_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                app:srcCompat="@drawable/dice_face_roll"
+                tools:srcCompat="@drawable/dice_face_roll" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/second_dices_row_robot"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:layout_marginTop="10dp"
+            android:gravity="center_horizontal|center_vertical">
+
+            <ImageView
+                android:id="@+id/robot_dice_image_4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                app:srcCompat="@drawable/dice_face_roll"
+                tools:srcCompat="@drawable/dice_face_roll" />
+
+            <ImageView
+                android:id="@+id/robot_dice_image_5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                app:srcCompat="@drawable/dice_face_roll"
+                tools:srcCompat="@drawable/dice_face_roll" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/user_name_row"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:layout_marginTop="20dp"
+            android:gravity="center_horizontal|center_vertical">
+
+            <TextView
+                android:id="@+id/user_id_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="You"
+                android:textAlignment="center"
+                android:textSize="20sp" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/user_total_row"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:gravity="center_horizontal|center_vertical">
+
+            <TextView
+                android:id="@+id/user_total_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ROLL"
+                android:textAlignment="center" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/first_dices_row_player"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:layout_marginTop="20dp"
+            android:gravity="center_horizontal|center_vertical">
+
+            <ImageView
+                android:id="@+id/user_dice_image_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                app:srcCompat="@drawable/dice_face_roll"
+                tools:srcCompat="@drawable/dice_face_roll" />
+
+            <ImageView
+                android:id="@+id/user_dice_image_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
                 app:srcCompat="@drawable/dice_face_roll"
                 tools:srcCompat="@drawable/dice_face_roll" />
         </TableRow>
 
         <TableRow
-            android:id="@+id/second_dices_row"
+            android:id="@+id/first_roll_switches_row"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:gravity="center_horizontal|center_vertical">
+
+            <Switch
+                android:id="@+id/user_dice_switch_1"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:gravity="center"
+                android:text="Keep" />
+
+            <Switch
+                android:id="@+id/user_dice_switch_2"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:gravity="center"
+                android:text="Keep" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/second_dices_row_player"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal|center_vertical"
             android:gravity="center_horizontal|center_vertical">
 
             <ImageView
-                android:id="@+id/user_dice_image_two"
+                android:id="@+id/user_dice_image_3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 app:srcCompat="@drawable/dice_face_roll"
                 tools:srcCompat="@drawable/dice_face_roll" />
 
             <ImageView
-                android:id="@+id/robot_dice_image_two"
+                android:id="@+id/user_dice_image_4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
                 app:srcCompat="@drawable/dice_face_roll"
                 tools:srcCompat="@drawable/dice_face_roll" />
+
+            <ImageView
+                android:id="@+id/user_dice_image_5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                app:srcCompat="@drawable/dice_face_roll"
+                tools:srcCompat="@drawable/dice_face_roll" />
+
         </TableRow>
 
         <TableRow
-            android:id="@+id/third_dices_row"
+            android:id="@+id/second_roll_switches_row"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal|center_vertical"
             android:gravity="center_horizontal|center_vertical">
 
-            <ImageView
-                android:id="@+id/user_dice_image_three"
+            <Switch
+                android:id="@+id/user_dice_switch_3"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="5dp"
-                app:srcCompat="@drawable/dice_face_roll"
-                tools:srcCompat="@drawable/dice_face_roll" />
+                android:layout_height="48dp"
+                android:gravity="center"
+                android:text="Keep" />
 
-            <ImageView
-                android:id="@+id/robot_dice_image_three"
+            <Switch
+                android:id="@+id/user_dice_switch_4"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                app:srcCompat="@drawable/dice_face_roll"
-                tools:srcCompat="@drawable/dice_face_roll" />
+                android:layout_height="48dp"
+                android:gravity="center"
+                android:text="Keep" />
 
+            <Switch
+                android:id="@+id/user_dice_switch_5"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:gravity="center"
+                android:text="Keep" />
         </TableRow>
 
         <TableRow
-            android:id="@+id/fourth_dices_row"
+            android:id="@+id/button_row"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal|center_vertical"
-            android:gravity="center_horizontal|center_vertical">
-
-            <ImageView
-                android:id="@+id/user_dice_image_four"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="5dp"
-                app:srcCompat="@drawable/dice_face_roll"
-                tools:srcCompat="@drawable/dice_face_roll" />
-
-            <ImageView
-                android:id="@+id/robot_dice_image_four"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                app:srcCompat="@drawable/dice_face_roll"
-                tools:srcCompat="@drawable/dice_face_roll" />
-        </TableRow>
-
-        <TableRow
-            android:id="@+id/fifth_dices_row"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal|center_vertical"
-            android:gravity="center_horizontal|center_vertical">
-
-            <ImageView
-                android:id="@+id/user_dice_image_five"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="5dp"
-                app:srcCompat="@drawable/dice_face_roll"
-                tools:srcCompat="@drawable/dice_face_roll" />
-
-            <ImageView
-                android:id="@+id/robot_dice_image_five"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                app:srcCompat="@drawable/dice_face_roll"
-                tools:srcCompat="@drawable/dice_face_roll" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal|center_vertical"
+            android:layout_marginTop="20dp"
             android:gravity="center_horizontal|center_vertical">
 
             <Button
                 android:id="@+id/throw_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
                 android:text="Throw" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal|center_vertical"
-            android:gravity="center_horizontal|center_vertical">
 
             <Button
                 android:id="@+id/score_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
                 android:text="Score" />
         </TableRow>
     </TableLayout>
 
     <TextView
-        android:id="@+id/player_score_label_text"
+        android:id="@+id/us_score_label_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
         android:text="Your Score"
         android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="@+id/tableLayout2"
-        app:layout_constraintEnd_toStartOf="@+id/tableLayout2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tableLayout2" />
+        app:layout_constraintEnd_toStartOf="@+id/user_score_text"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/robot_score_label_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
         android:text="Robot Score"
         android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="@+id/tableLayout2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tableLayout2"
-        app:layout_constraintTop_toTopOf="@+id/tableLayout2" />
+        app:layout_constraintEnd_toStartOf="@+id/robot_score_text"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/player_score_text"
+        android:id="@+id/user_score_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
         android:text="0"
         android:textAlignment="center"
-        app:layout_constraintEnd_toStartOf="@+id/tableLayout2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/player_score_label_text" />
+        app:layout_constraintEnd_toStartOf="@+id/robot_score_label_text"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/robot_score_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
         android:text="0"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tableLayout2"
-        app:layout_constraintTop_toBottomOf="@+id/robot_score_label_text" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

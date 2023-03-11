@@ -1,8 +1,8 @@
 package com.example.dicegame
 
-class Dice {
+open class Dice {
     private var diceValue: Int = 0
-    fun rollDice() {
+    open fun rollDice() {
         diceValue = (1..6).random()
     }
     fun getDiceValue(): Int {
