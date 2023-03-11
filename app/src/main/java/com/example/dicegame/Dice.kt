@@ -2,7 +2,7 @@ package com.example.dicegame
 
 open class Dice {
     private var diceValue: Int = 0
-    open fun rollDice() {
+    fun rollDice() {
         diceValue = (1..6).random()
     }
     fun getDiceValue(): Int {

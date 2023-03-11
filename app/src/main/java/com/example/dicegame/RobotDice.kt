@@ -11,18 +11,22 @@ class RobotDice: Dice() {
         return Random.nextBoolean()
     }
 
-    override fun rollDice() {
-        if (reRollCount < 2) {
-            super.rollDice()
-            doReRoll = shouldReRoll()
+    fun reRoll() {
+        doReRoll = shouldReRoll()
+        if (doReRoll && reRollCount < maxReRollCount) {
+            rollDice()
         }
+        reRollCount++
     }
 
-    fun reRoll() {
-        if (doReRoll) {
-            super.rollDice()
-            reRollCount++
+    fun getFinalDiceValue(): Int {
+        if (reRollCount < maxReRollCount) {
+            reRoll()
+            getFinalDiceValue()
+        } else {
+            reRollCount = 0
         }
+        return getDiceValue()
     }
 
 }

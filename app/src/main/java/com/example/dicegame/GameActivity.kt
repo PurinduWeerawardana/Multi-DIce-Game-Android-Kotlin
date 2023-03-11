@@ -3,11 +3,9 @@ package com.example.dicegame
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.DialogInterface
-import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.Gravity
 import android.view.KeyEvent
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -17,11 +15,11 @@ import java.util.*
 class GameActivity : AppCompatActivity() {
     private val userDiceList = mutableListOf<Dice>()
     private val userDiceSwitchesList = mutableListOf<Switch>()
-    private val robotDiceList = mutableListOf<Dice>()
+    private val robotDiceList = mutableListOf<RobotDice>()
     private var userTotal: Int = 0
     private var robotTotal: Int = 0
     private var throwCount: Int = 0
-    private val maxThrowCount: Int = 3
+    private var maxThrowCount: Int = 3
     private lateinit var userTotalText: TextView
     private lateinit var robotTotalText: TextView
     private lateinit var userScoreText: TextView
@@ -55,7 +53,7 @@ class GameActivity : AppCompatActivity() {
         // Initialize the dice lists
         for (i in 1..5) {
             userDiceList.add(Dice())
-            robotDiceList.add(Dice())
+            robotDiceList.add(RobotDice())
         }
 
         // Set the initial dice images
@@ -80,7 +78,7 @@ class GameActivity : AppCompatActivity() {
                 Handler(Looper.getMainLooper()).postDelayed(Runnable {
                     scoreButton.performClick()
                 }, 4000)
-                Toast.makeText(this, "Optional rolls are over. Score will update automatically.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "No more optional rolls! Score will update automatically!", Toast.LENGTH_SHORT).show()
             } else{
                 throwButton.text = "Throw (${throwCount + 1})"
             }
@@ -88,8 +86,8 @@ class GameActivity : AppCompatActivity() {
 
         // scoreButton click listener
         scoreButton.setOnClickListener {
-            updateScore(userTotal, robotTotal)
             throwButton.isEnabled = false
+            updateScore()
             userTotal = 0
             robotTotal = 0
             userTotalText.text = userTotal.toString()
@@ -169,53 +167,73 @@ class GameActivity : AppCompatActivity() {
             } else {
                 userDiceList[4].rollDice()
             }
+            for (robotDice in robotDiceList) {
+                robotDice.reRoll()
+            }
         }
         throwCount++
     }
 
-    private fun updateScore(playerTotal: Int, computerTotal: Int) {
-        userScoreText.text = userScoreText.text.toString().toInt().plus(playerTotal).toString()
-        if (userScoreText.text.toString().toInt() >= 101) {
-            val alertDialogBuilder = AlertDialog.Builder(this)
-            alertDialogBuilder.setTitle("Game Over!")
-            alertDialogBuilder.setMessage("You have won the game!")
-            alertDialogBuilder.setPositiveButton("OK", null)
-            alertDialogBuilder.setOnKeyListener(
-                DialogInterface.OnKeyListener { dialog, keyCode, event ->
-                if (keyCode == KeyEvent.KEYCODE_BACK) {
-                    dialog.dismiss()
-                    finish()
-                    return@OnKeyListener true
-                }
-                false
-                }
-            )
-            // TODO: Change the color of the dialog box
-            // TODO: finish the game
-            val alertDialog = alertDialogBuilder.create()
-            alertDialog.show()
-            return@updateScore
-        }
-        robotScoreText.text = robotScoreText.text.toString().toInt().plus(computerTotal).toString()
-        if (robotScoreText.text.toString().toInt() >= 101) {
-            val builder = AlertDialog.Builder(this)
-            with(builder) {
-                setTitle("Game Over!")
-                setMessage("You have lost the game!")
-                setPositiveButton("OK", null)
-                setNegativeButton("CANCEL", null)
-                setNeutralButton("NEUTRAL", null)
+    private fun updateScore() {
+        if (throwCount < maxThrowCount){
+            var finalRobotTotal: Int = 0
+            for (robotDice in robotDiceList) {
+                finalRobotTotal += robotDice.getFinalDiceValue()
             }
-            val alertDialog = builder.create()
-            alertDialog.show()
+            if (finalRobotTotal != this.robotTotal){
+                this.robotTotal = finalRobotTotal
+                Toast.makeText(this, "Final robot total after ${maxThrowCount-throwCount} re rolls: $robotTotal", Toast.LENGTH_LONG).show()
+            }
 
-            val button = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE)
-            with(button) {
-                setBackgroundColor(Color.RED)
-                setPadding(0, 0, 20, 0)
-                setTextColor(Color.WHITE)
+        }
+        userScoreText.text = userScoreText.text.toString().toInt().plus(this.userTotal).toString()
+        robotScoreText.text = robotScoreText.text.toString().toInt().plus(this.robotTotal).toString()
+        if (userScoreText.text.toString().toInt() >= 101 || robotScoreText.text.toString().toInt() >= 101){
+            maxThrowCount = 1
+            if (userScoreText.text.toString().toInt() == robotScoreText.text.toString().toInt()){
+                val alertDialogBuilder = AlertDialog.Builder(this)
+                alertDialogBuilder.setTitle("Scores Tied!")
+                alertDialogBuilder.setMessage("No more optional rolls. Game will end after one player scores more than other.")
+                alertDialogBuilder.setPositiveButton("OK", null)
+                val alertDialog = alertDialogBuilder.create()
+                alertDialog.show()
+            } else if (userScoreText.text.toString().toInt() > robotScoreText.text.toString().toInt()) {
+                val alertDialogBuilder = AlertDialog.Builder(this)
+                alertDialogBuilder.setTitle("Game Over!")
+                alertDialogBuilder.setMessage("You have won the game!")
+                alertDialogBuilder.setPositiveButton("OK", null)
+                alertDialogBuilder.setOnKeyListener(
+                    DialogInterface.OnKeyListener { dialog, keyCode, event ->
+                        if (keyCode == KeyEvent.KEYCODE_BACK) {
+                            dialog.dismiss()
+                            finish()
+                            return@OnKeyListener true
+                        }
+                        false
+                    }
+                )
+                // TODO: Change the color of the dialog box
+                // TODO: finish the game
+                val alertDialog = alertDialogBuilder.create()
+                alertDialog.show()
+            } else {
+                val alertDialogBuilder = AlertDialog.Builder(this)
+                alertDialogBuilder.setTitle("Game Over!")
+                alertDialogBuilder.setMessage("You have lost the game!")
+                alertDialogBuilder.setPositiveButton("OK", null)
+                alertDialogBuilder.setOnKeyListener(
+                    DialogInterface.OnKeyListener { dialog, keyCode, event ->
+                        if (keyCode == KeyEvent.KEYCODE_BACK) {
+                            dialog.dismiss()
+                            finish()
+                            return@OnKeyListener true
+                        }
+                        false
+                    }
+                )
+                val alertDialog = alertDialogBuilder.create()
+                alertDialog.show()
             }
-            //finish()
         }
         resetDices()
     }
