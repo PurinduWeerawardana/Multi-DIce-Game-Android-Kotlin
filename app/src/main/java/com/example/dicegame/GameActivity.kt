@@ -13,7 +13,7 @@ import java.util.*
 
 @SuppressLint("UseSwitchCompatOrMaterialCode")
 class GameActivity : AppCompatActivity() {
-    private val userDiceList = mutableListOf<Dice>()
+    private val userDiceList = mutableListOf<UserDice>()
     private val userDiceSwitchesList = mutableListOf<Switch>()
     private val robotDiceList = mutableListOf<RobotDice>()
     private var userTotal: Int = 0
@@ -52,7 +52,7 @@ class GameActivity : AppCompatActivity() {
 
         // Initialize the dice lists
         for (i in 1..5) {
-            userDiceList.add(Dice())
+            userDiceList.add(UserDice())
             robotDiceList.add(RobotDice())
         }
 
@@ -175,7 +175,9 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun updateScore() {
-        if (throwCount < maxThrowCount){
+        if (throwCount == 0){
+            Toast.makeText(this, "You have to throw the dices first!", Toast.LENGTH_SHORT).show()
+        } else if (throwCount < maxThrowCount){
             var finalRobotTotal: Int = 0
             for (robotDice in robotDiceList) {
                 finalRobotTotal += robotDice.getFinalDiceValue()
@@ -201,38 +203,20 @@ class GameActivity : AppCompatActivity() {
                 val alertDialogBuilder = AlertDialog.Builder(this)
                 alertDialogBuilder.setTitle("Game Over!")
                 alertDialogBuilder.setMessage("You have won the game!")
-                alertDialogBuilder.setPositiveButton("OK", null)
-                alertDialogBuilder.setOnKeyListener(
-                    DialogInterface.OnKeyListener { dialog, keyCode, event ->
-                        if (keyCode == KeyEvent.KEYCODE_BACK) {
-                            dialog.dismiss()
-                            finish()
-                            return@OnKeyListener true
-                        }
-                        false
-                    }
-                )
+                alertDialogBuilder.setPositiveButton("OK", { _, _ -> this.finish() })
                 // TODO: Change the color of the dialog box
                 // TODO: finish the game
                 val alertDialog = alertDialogBuilder.create()
                 alertDialog.show()
+                alertDialog.window?.setBackgroundDrawableResource(android.R.color.holo_green_light);
             } else {
                 val alertDialogBuilder = AlertDialog.Builder(this)
                 alertDialogBuilder.setTitle("Game Over!")
                 alertDialogBuilder.setMessage("You have lost the game!")
-                alertDialogBuilder.setPositiveButton("OK", null)
-                alertDialogBuilder.setOnKeyListener(
-                    DialogInterface.OnKeyListener { dialog, keyCode, event ->
-                        if (keyCode == KeyEvent.KEYCODE_BACK) {
-                            dialog.dismiss()
-                            finish()
-                            return@OnKeyListener true
-                        }
-                        false
-                    }
-                )
+                alertDialogBuilder.setPositiveButton("OK",{ _, _ -> this.finish() })
                 val alertDialog = alertDialogBuilder.create()
                 alertDialog.show()
+                alertDialog.window?.setBackgroundDrawableResource(android.R.color.holo_red_light);
             }
         }
         resetDices()
