@@ -360,7 +360,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="8dp"
         android:text="Your Score:"
         android:textAlignment="center"
         android:textColor="@color/white"
@@ -373,7 +373,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="8dp"
         android:text="Robot Score:"
         android:textAlignment="center"
         android:textColor="@color/white"
@@ -386,12 +386,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="4dp"
         android:text="0"
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="20sp"
-        app:layout_constraintEnd_toStartOf="@+id/robot_score_label_text"
+        app:layout_constraintEnd_toStartOf="@+id/user_win_score"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -399,12 +399,32 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="4dp"
         android:text="0"
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/robot_win_score"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/user_win_score"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="/101"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/user_score_text"
+        app:layout_constraintEnd_toStartOf="@+id/robot_score_label_text" />
+
+    <TextView
+        android:id="@+id/robot_win_score"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="/101"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/robot_score_text"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

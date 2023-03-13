@@ -3,6 +3,7 @@ package com.example.dicegame
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -17,9 +18,14 @@ class GameActivity : AppCompatActivity() {
     private val userDiceSwitchesList = mutableListOf<Switch>()
     private val robotDiceList = mutableListOf<RobotDice>()
     private var userTotal: Int = 0
+    private var userScore: Int = 0
     private var robotTotal: Int = 0
+    private var robotScore: Int = 0
     private var throwCount: Int = 0
     private var maxThrowCount: Int = 3
+    private var winningScore: Int = 101
+    private lateinit var userWinScore: TextView
+    private lateinit var robotWinScore: TextView
     private lateinit var userTotalText: TextView
     private lateinit var robotTotalText: TextView
     private lateinit var userScoreText: TextView
@@ -49,6 +55,13 @@ class GameActivity : AppCompatActivity() {
 
         // Initialize the views
         initializeViews()
+
+        val intent: Intent = intent;
+        if (intent.hasExtra("winningScore")) {
+            winningScore = intent.getIntExtra("winningScore", 101)
+            userWinScore.text = "/" + winningScore.toString()
+            robotWinScore.text = "/" + winningScore.toString()
+        }
 
         // Initialize the dice lists
         for (i in 1..5) {
@@ -99,6 +112,8 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun initializeViews() {
+        userWinScore = findViewById(R.id.user_win_score)
+        robotWinScore = findViewById(R.id.robot_win_score)
         userScoreText = findViewById(R.id.user_score_text)
         robotScoreText = findViewById(R.id.robot_score_text)
         robotTotalText = findViewById(R.id.robot_total_text)
@@ -174,38 +189,39 @@ class GameActivity : AppCompatActivity() {
         throwCount++
     }
 
+    @SuppressLint("SetTextI18n")
     private fun updateScore() {
-        if (throwCount == 0){
-            Toast.makeText(this, "You have to throw the dices first!", Toast.LENGTH_SHORT).show()
-        } else if (throwCount < maxThrowCount){
-            var finalRobotTotal: Int = 0
-            for (robotDice in robotDiceList) {
-                finalRobotTotal += robotDice.getFinalDiceValue()
+        userScore = userScoreText.text.toString().toInt().plus(this.userTotal)
+        robotScore = robotScoreText.text.toString().toInt().plus(this.robotTotal)
+        if (userScore < winningScore && robotScore < winningScore){
+            if (throwCount == 0){
+                Toast.makeText(this, "You have to throw the dices first!", Toast.LENGTH_SHORT).show()
+            } else if (throwCount < maxThrowCount){
+                var finalRobotTotal: Int = 0
+                for (robotDice in robotDiceList) {
+                    finalRobotTotal += robotDice.getFinalDiceValue()
+                }
+                if (finalRobotTotal != this.robotTotal){
+                    robotScore += finalRobotTotal-robotTotal
+                    Toast.makeText(this, "Final robot total after ${maxThrowCount-throwCount} re rolls: $finalRobotTotal", Toast.LENGTH_LONG).show()
+                }
             }
-            if (finalRobotTotal != this.robotTotal){
-                this.robotTotal = finalRobotTotal
-                Toast.makeText(this, "Final robot total after ${maxThrowCount-throwCount} re rolls: $robotTotal", Toast.LENGTH_LONG).show()
-            }
-
-        }
-        userScoreText.text = userScoreText.text.toString().toInt().plus(this.userTotal).toString()
-        robotScoreText.text = robotScoreText.text.toString().toInt().plus(this.robotTotal).toString()
-        if (userScoreText.text.toString().toInt() >= 101 || robotScoreText.text.toString().toInt() >= 101){
+            updateScoreUI(userScore,robotScore)
+        } else{
+            updateScoreUI(userScore,robotScore)
             maxThrowCount = 1
-            if (userScoreText.text.toString().toInt() == robotScoreText.text.toString().toInt()){
+            if (userScore == robotScore){
                 val alertDialogBuilder = AlertDialog.Builder(this)
                 alertDialogBuilder.setTitle("Scores Tied!")
                 alertDialogBuilder.setMessage("No more optional rolls. Game will end after one player scores more than other.")
                 alertDialogBuilder.setPositiveButton("OK", null)
                 val alertDialog = alertDialogBuilder.create()
                 alertDialog.show()
-            } else if (userScoreText.text.toString().toInt() > robotScoreText.text.toString().toInt()) {
+            } else if (userScore > robotScore) {
                 val alertDialogBuilder = AlertDialog.Builder(this)
                 alertDialogBuilder.setTitle("Game Over!")
                 alertDialogBuilder.setMessage("You have won the game!")
                 alertDialogBuilder.setPositiveButton("OK", { _, _ -> this.finish() })
-                // TODO: Change the color of the dialog box
-                // TODO: finish the game
                 val alertDialog = alertDialogBuilder.create()
                 alertDialog.show()
                 alertDialog.window?.setBackgroundDrawableResource(android.R.color.holo_green_light);
@@ -220,6 +236,11 @@ class GameActivity : AppCompatActivity() {
             }
         }
         resetDices()
+    }
+
+    private fun updateScoreUI(userScore: Int, robotScore: Int) {
+        userScoreText.text = userScore.toString()
+        robotScoreText.text = robotScore.toString()
     }
 
     private fun resetDices() {
