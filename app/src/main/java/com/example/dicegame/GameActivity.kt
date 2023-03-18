@@ -51,65 +51,17 @@ class GameActivity : AppCompatActivity() {
     private lateinit var scoreButton: Button
     private lateinit var winCounter: TextView
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        Log.i(TAG, "onSaveInstanceState")
-        outState.putInt("userWins", userWins)
-        outState.putInt("robotWins", robotWins)
-        outState.putInt("userTotal", userTotal)
-        outState.putInt("userScore", userScore)
-        outState.putInt("robotTotal", robotTotal)
-        outState.putInt("robotScore", robotScore)
-        outState.putInt("throwCount", throwCount)
-        outState.putInt("maxThrowCount", maxThrowCount)
-        outState.putInt("winningScore", winningScore)
-        outState.putSerializable("userDiceList", userDiceList as ArrayList<UserDice>)
-        outState.putSerializable("robotDiceList", robotDiceList as ArrayList<RobotDice>)
-        outState.putSerializable("userDiceSwitchesList", userDiceSwitchesList as ArrayList<Switch>)
-    }
-
-    @Suppress("DEPRECATION")
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        Log.i(TAG, "onRestoreInstanceState")
-        userWins = savedInstanceState.getInt("userWins")
-        robotWins = savedInstanceState.getInt("robotWins")
-        winCounter.text = resources.getString(R.string.win_counter_text, userWins, robotWins)
-        userTotal = savedInstanceState.getInt("userTotal")
-        userTotalText.text = userTotal.toString()
-        userScore = savedInstanceState.getInt("userScore")
-        userScoreText.text = userScore.toString()
-        robotTotal = savedInstanceState.getInt("robotTotal")
-        robotTotalText.text = robotTotal.toString()
-        robotScore = savedInstanceState.getInt("robotScore")
-        robotScoreText.text = robotScore.toString()
-        throwCount = savedInstanceState.getInt("throwCount")
-        maxThrowCount = savedInstanceState.getInt("maxThrowCount")
-        if (throwCount > 0){
-            throwButton.text = getString(R.string.re_roll_btn, throwCount)
-        }
-        winningScore = savedInstanceState.getInt("winningScore")
-        userWinScore.text = getString(R.string.winning_score_text, winningScore)
-        robotWinScore.text = getString(R.string.winning_score_text, winningScore)
-        userDiceList = savedInstanceState.getSerializable("userDiceList") as MutableList<UserDice>
-        robotDiceList = savedInstanceState.getSerializable("robotDiceList") as MutableList<RobotDice>
-        userDiceSwitchesList = savedInstanceState.getSerializable("userDiceSwitchesList") as MutableList<Switch>
-        showDiceImages()
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
 
-        // Initialize the views
-        initializeViews()
-
         val intent: Intent = intent
         if (intent.hasExtra("winningScore")) {
             winningScore = intent.getIntExtra("winningScore", 101)
-            userWinScore.text = getString(R.string.winning_score_text, winningScore)
-            robotWinScore.text = getString(R.string.winning_score_text, winningScore)
         }
+
+        // Initialize the views
+        initializeViews()
 
         // Initialize the dice lists ans switches
         for (i in 1..5) {
@@ -190,6 +142,8 @@ class GameActivity : AppCompatActivity() {
         scoreButton = findViewById(R.id.score_button)
         winCounter = findViewById(R.id.win_counter)
         winCounter.text = getString(R.string.win_counter_text, userWins, robotWins)
+        userWinScore.text = getString(R.string.winning_score_text, winningScore)
+        robotWinScore.text = getString(R.string.winning_score_text, winningScore)
     }
 
     private fun showDiceImages() {
@@ -262,6 +216,7 @@ class GameActivity : AppCompatActivity() {
                 alertDialogBuilder.setMessage(R.string.game_won_popup_msg)
                 alertDialogBuilder.setPositiveButton(R.string.positive_btn_text) { _, _ -> this.finish() }
                 val alertDialog = alertDialogBuilder.create()
+                alertDialog.setCancelable(false)
                 alertDialog.show()
                 alertDialog.window?.setBackgroundDrawableResource(android.R.color.holo_green_light)
             } else {
@@ -272,6 +227,7 @@ class GameActivity : AppCompatActivity() {
                 alertDialogBuilder.setMessage(getString(R.string.game_lost_popup_msg))
                 alertDialogBuilder.setPositiveButton(R.string.positive_btn_text) { _, _ -> this.finish() }
                 val alertDialog = alertDialogBuilder.create()
+                alertDialog.setCancelable(false)
                 alertDialog.show()
                 alertDialog.window?.setBackgroundDrawableResource(android.R.color.holo_red_light)
             }
@@ -297,4 +253,49 @@ class GameActivity : AppCompatActivity() {
         userDice5Switch.isChecked = false
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        Log.i(TAG, "onSaveInstanceState")
+        outState.putInt("userWins", userWins)
+        outState.putInt("robotWins", robotWins)
+        outState.putInt("userTotal", userTotal)
+        outState.putInt("userScore", userScore)
+        outState.putInt("robotTotal", robotTotal)
+        outState.putInt("robotScore", robotScore)
+        outState.putInt("throwCount", throwCount)
+        outState.putInt("maxThrowCount", maxThrowCount)
+        outState.putInt("winningScore", winningScore)
+        outState.putSerializable("userDiceList", userDiceList as ArrayList<UserDice>)
+        outState.putSerializable("robotDiceList", robotDiceList as ArrayList<RobotDice>)
+        outState.putSerializable("userDiceSwitchesList", userDiceSwitchesList as ArrayList<Switch>)
+    }
+
+    @Suppress("DEPRECATION")
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        Log.i(TAG, "onRestoreInstanceState")
+        userWins = savedInstanceState.getInt("userWins")
+        robotWins = savedInstanceState.getInt("robotWins")
+        winCounter.text = resources.getString(R.string.win_counter_text, userWins, robotWins)
+        userTotal = savedInstanceState.getInt("userTotal")
+        userTotalText.text = userTotal.toString()
+        userScore = savedInstanceState.getInt("userScore")
+        userScoreText.text = userScore.toString()
+        robotTotal = savedInstanceState.getInt("robotTotal")
+        robotTotalText.text = robotTotal.toString()
+        robotScore = savedInstanceState.getInt("robotScore")
+        robotScoreText.text = robotScore.toString()
+        throwCount = savedInstanceState.getInt("throwCount")
+        maxThrowCount = savedInstanceState.getInt("maxThrowCount")
+        if (throwCount > 0){
+            throwButton.text = getString(R.string.re_roll_btn, throwCount)
+        }
+        winningScore = savedInstanceState.getInt("winningScore")
+        userWinScore.text = getString(R.string.winning_score_text, winningScore)
+        robotWinScore.text = getString(R.string.winning_score_text, winningScore)
+        userDiceList = savedInstanceState.getSerializable("userDiceList") as MutableList<UserDice>
+        robotDiceList = savedInstanceState.getSerializable("robotDiceList") as MutableList<RobotDice>
+        userDiceSwitchesList = savedInstanceState.getSerializable("userDiceSwitchesList") as MutableList<Switch>
+        showDiceImages()
+    }
 }

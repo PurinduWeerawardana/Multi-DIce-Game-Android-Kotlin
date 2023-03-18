@@ -50,8 +50,4 @@ class MainActivity : AppCompatActivity() {
             alertDialog.show()
         }
     }
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        Log.i(TAG, "onSaveInstanceState")
-    }
 }
