@@ -2,21 +2,24 @@ package com.example.dicegame
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.ContentValues.TAG
 import android.content.DialogInterface
 import android.content.Intent
-import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
+import android.os.*
+import android.util.Log
 import android.view.KeyEvent
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import java.io.Serializable
 import java.util.*
 
 @SuppressLint("UseSwitchCompatOrMaterialCode")
 class GameActivity : AppCompatActivity() {
-    private val userDiceList = mutableListOf<UserDice>()
-    private val userDiceSwitchesList = mutableListOf<Switch>()
-    private val robotDiceList = mutableListOf<RobotDice>()
+    private var userWins: Int = 0
+    private var robotWins: Int = 0
+    private var userDiceList = mutableListOf<UserDice>()
+    private var userDiceSwitchesList = mutableListOf<Switch>()
+    private var robotDiceList = mutableListOf<RobotDice>()
     private var userTotal: Int = 0
     private var userScore: Int = 0
     private var robotTotal: Int = 0
@@ -47,7 +50,63 @@ class GameActivity : AppCompatActivity() {
     private lateinit var robotDice5: ImageView
     private lateinit var throwButton: Button
     private lateinit var scoreButton: Button
+    private lateinit var winCounter: TextView
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        Log.i(TAG, "onSaveInstanceState")
+        outState.putInt("userWins", userWins)
+        outState.putInt("robotWins", robotWins)
+        outState.putInt("userTotal", userTotal)
+        outState.putInt("userScore", userScore)
+        outState.putInt("robotTotal", robotTotal)
+        outState.putInt("robotScore", robotScore)
+        outState.putInt("throwCount", throwCount)
+        outState.putInt("maxThrowCount", maxThrowCount)
+        outState.putInt("winningScore", winningScore)
+        outState.putSerializable("userDiceList", userDiceList as ArrayList<UserDice>)
+        outState.putSerializable("robotDiceList", robotDiceList as ArrayList<RobotDice>)
+        outState.putSerializable("userDiceSwitchesList", userDiceSwitchesList as ArrayList<Switch>)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        Log.i(TAG, "onRestoreInstanceState")
+        userWins = savedInstanceState.getInt("userWins")
+        robotWins = savedInstanceState.getInt("robotWins")
+        winCounter.text = "U: $userWins / R: $robotWins"
+        userTotal = savedInstanceState.getInt("userTotal")
+        userTotalText.text = userTotal.toString()
+        userScore = savedInstanceState.getInt("userScore")
+        userScoreText.text = userScore.toString()
+        robotTotal = savedInstanceState.getInt("robotTotal")
+        robotTotalText.text = robotTotal.toString()
+        robotScore = savedInstanceState.getInt("robotScore")
+        robotScoreText.text = robotScore.toString()
+        throwCount = savedInstanceState.getInt("throwCount")
+        maxThrowCount = savedInstanceState.getInt("maxThrowCount")
+        winningScore = savedInstanceState.getInt("winningScore")
+        userWinScore.text = "/" + winningScore.toString()
+        robotWinScore.text = "/" + winningScore.toString()
+        userDiceList = savedInstanceState.customGetSerializable("userDiceList")!!
+        robotDiceList = savedInstanceState.customGetSerializable("robotDiceList")!!
+        userDiceSwitchesList = savedInstanceState.customGetSerializable("userDiceSwitchesList")!!
+//        userDiceList = savedInstanceState.getSerializable("userDiceList") as MutableList<UserDice>
+//        robotDiceList = savedInstanceState.getSerializable("robotDiceList") as MutableList<RobotDice>
+//        userDiceSwitchesList = savedInstanceState.getSerializable("userDiceSwitchesList") as MutableList<Switch>
+        showDiceImages()
+    }
+
+    // The "getSerializable" method is deprecated in API 33, need to use this workaround
+    // https://stackoverflow.com/questions/73388006/android-13-sdk-33-bundle-getserializablestring-is-deprecated-what-is-alter
+    @Suppress("Deprecation")
+    inline fun <reified T : Serializable> Bundle.customGetSerializable(key: String): T? {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            getSerializable(key, T::class.java)
+        } else {
+            getSerializable(key) as? T
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,17 +122,24 @@ class GameActivity : AppCompatActivity() {
             robotWinScore.text = "/" + winningScore.toString()
         }
 
-        // Initialize the dice lists
+        // Initialize the dice lists ans switches
         for (i in 1..5) {
             userDiceList.add(UserDice())
             robotDiceList.add(RobotDice())
         }
+        userDiceSwitchesList.add(userDice1Switch)
+        userDiceSwitchesList.add(userDice2Switch)
+        userDiceSwitchesList.add(userDice3Switch)
+        userDiceSwitchesList.add(userDice4Switch)
+        userDiceSwitchesList.add(userDice5Switch)
 
         // Set the initial dice images
         showDiceImages()
 
         // throwButton click listener
         throwButton.setOnClickListener {
+            print(userWins)
+            print(robotWins)
             throwDices()
             showDiceImages()
             userTotal = 0
@@ -135,6 +201,8 @@ class GameActivity : AppCompatActivity() {
         userDice5Switch = findViewById(R.id.user_dice_switch_5)
         throwButton = findViewById(R.id.throw_button)
         scoreButton = findViewById(R.id.score_button)
+        winCounter = findViewById(R.id.win_counter)
+        winCounter.text = "U: $userWins / R: $robotWins"
     }
 
     private fun showDiceImages() {
@@ -157,30 +225,12 @@ class GameActivity : AppCompatActivity() {
                 robotDiceList[i].rollDice()
             }
         } else {
-            if (userDice1Switch.isChecked) {
-                userDice1Switch.isChecked = false
-            } else {
-                userDiceList[0].rollDice()
-            }
-            if (userDice2Switch.isChecked) {
-                userDice2Switch.isChecked = false
-            } else {
-                userDiceList[1].rollDice()
-            }
-            if (userDice3Switch.isChecked) {
-                userDice3Switch.isChecked = false
-            } else {
-                userDiceList[2].rollDice()
-            }
-            if (userDice4Switch.isChecked) {
-                userDice4Switch.isChecked = false
-            } else {
-                userDiceList[3].rollDice()
-            }
-            if (userDice5Switch.isChecked) {
-                userDice5Switch.isChecked = false
-            } else {
-                userDiceList[4].rollDice()
+            for (i in 0..4) {
+                if (userDiceSwitchesList[i].isChecked) {
+                    userDiceSwitchesList[i].isChecked = false
+                } else {
+                    userDiceList[i].rollDice()
+                }
             }
             for (robotDice in robotDiceList) {
                 robotDice.reRoll()
@@ -218,6 +268,8 @@ class GameActivity : AppCompatActivity() {
                 val alertDialog = alertDialogBuilder.create()
                 alertDialog.show()
             } else if (userScore > robotScore) {
+                userWins++
+                winCounter.text = "U: $userWins / R: $robotWins"
                 val alertDialogBuilder = AlertDialog.Builder(this)
                 alertDialogBuilder.setTitle("Game Over!")
                 alertDialogBuilder.setMessage("You have won the game!")
@@ -226,6 +278,8 @@ class GameActivity : AppCompatActivity() {
                 alertDialog.show()
                 alertDialog.window?.setBackgroundDrawableResource(android.R.color.holo_green_light);
             } else {
+                robotWins++
+                winCounter.text = "U: $userWins / R: $robotWins"
                 val alertDialogBuilder = AlertDialog.Builder(this)
                 alertDialogBuilder.setTitle("Game Over!")
                 alertDialogBuilder.setMessage("You have lost the game!")
