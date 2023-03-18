@@ -22,19 +22,19 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
         customGameButton = findViewById(R.id.custom_game_button)
-        customGameButton.setOnClickListener() {
+        customGameButton.setOnClickListener {
             val alertDialogBuilder = AlertDialog.Builder(this)
-            alertDialogBuilder.setTitle("Custom Game")
-            alertDialogBuilder.setMessage("Enter the winning score:")
+            alertDialogBuilder.setTitle(R.string.custom_game_btn)
+            alertDialogBuilder.setMessage(R.string.custom_win_score_prompt_text)
             val input = EditText(this)
             input.inputType = android.text.InputType.TYPE_CLASS_NUMBER
             alertDialogBuilder.setView(input)
-            alertDialogBuilder.setPositiveButton("OK") { _, _ ->
+            alertDialogBuilder.setPositiveButton(R.string.positive_btn_text) { _, _ ->
                 val intent = Intent(this, GameActivity::class.java)
                 intent.putExtra("winningScore", input.text.toString().toInt())
                 startActivity(intent)
             }
-            alertDialogBuilder.setNegativeButton("Cancel", null)
+            alertDialogBuilder.setNegativeButton(R.string.negative_btn_text, null)
             val alertDialog = alertDialogBuilder.create()
             alertDialog.show()
         }
@@ -42,14 +42,9 @@ class MainActivity : AppCompatActivity() {
         aboutButton.setOnClickListener {
             val builder = AlertDialog.Builder(this)
             with(builder) {
-                setTitle("About")
-                setMessage("Author: Purindu Weerawardana (w1867462)\n\n" +
-                        "I confirm that I understand what plagiarism is and have read and "+
-                        "understood the section on Assessment Offences in the Essential " +
-                        "Information for Students. The work that I have submitted is " +
-                        "entirely my own. Any work from other authors is duly referenced " +
-                        "and acknowledged.")
-                setPositiveButton("OK", null)
+                setTitle(R.string.about_label_text)
+                setMessage(R.string.about_text)
+                setPositiveButton(R.string.positive_btn_text, null)
             }
             val alertDialog = builder.create()
             alertDialog.show()

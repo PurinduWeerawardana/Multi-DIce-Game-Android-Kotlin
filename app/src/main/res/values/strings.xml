@@ -1,3 +1,35 @@
 <resources>
-    <string name="app_name">DIce Game</string>
+    <string name="app_name">Dice Game</string>
+    <string name="about_text">Author: Purindu Weerawardana (w1867462)\n\nI confirm that I understand what plagiarism is and have read and understood the section on Assessment Offences in the Essential Information for Students. The work that I have submitted is entirely my own. Any work from other authors is duly referenced and acknowledged.</string>
+    <string name="win_counter_text">U: %d / R: %d</string>
+    <string name="custom_game_btn">\tCustom Game</string>
+    <string name="dice_game_app_name">Dice Game</string>
+    <string name="new_game_btn">\tNew Game</string>
+    <string name="about_btn">\tAbout</string>
+    <string name="dice_game_logo_text">dice game logo</string>
+    <string name="robot_name_text">Robot</string>
+    <string name="initial_roll_text">ROLL</string>
+    <string name="robot_dice_image_text">robot dice image</string>
+    <string name="user_dice_image_text">user dice image</string>
+    <string name="user_name_text">You</string>
+    <string name="keep_switch_text">Keep</string>
+    <string name="user_score_count_label_text">Your Score:</string>
+    <string name="robot_score_label_text" >Robot Score:</string>
+    <string name="throw_btn">\tThrow</string>
+    <string name="re_roll_btn">\tRe-Roll (%d)</string>
+    <string name="score_btn">\tScore</string>
+    <string name="zero">0</string>
+    <string name="about_label_text">About</string>
+    <string name="custom_win_score_prompt_text">Enter the winning score:</string>
+    <string name="positive_btn_text">OK</string>
+    <string name="negative_btn_text">Cancel</string>
+    <string name="winning_score_text">/ %d</string>
+    <string name="no_optional_roll_text">No more optional rolls! Score will update automatically!</string>
+    <string name="throw_dices_first_text">You have to throw the dices first!</string>
+    <string name="final_robot_total_text">Final robot total after %d re rolls: %d</string>
+    <string name="scores_tied_popup_title_text">Scores Tied!</string>
+    <string name="scores_tied_popup_msg">No more optional rolls. Game will end after one player scores more than other.</string>
+    <string name="game_over_popup_title_text">Game Over!</string>
+    <string name="game_won_popup_msg">You have won the game!</string>
+    <string name="game_lost_popup_msg">You have lost the game!</string>
 </resources>

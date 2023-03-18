@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="sans-serif-medium"
-            android:text="Dice Game"
+            android:text="@string/app_name"
             android:textColor="@color/white"
             android:textSize="20sp"
             android:textStyle="italic"
@@ -41,7 +41,7 @@
         android:layout_marginBottom="12dp"
         android:background="@drawable/rounded_corner_button_white"
         android:drawableStart="@drawable/ic_new_game"
-        android:text="\tNew Game"
+        android:text="@string/new_game_btn"
         app:layout_constraintBottom_toTopOf="@+id/custom_game_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -53,7 +53,7 @@
         android:layout_marginBottom="32dp"
         android:background="@drawable/rounded_corner_button_white"
         android:drawableStart="@drawable/ic_info"
-        android:text="\tAbout"
+        android:text="@string/about_btn"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -65,7 +65,7 @@
         android:layout_marginBottom="16dp"
         android:background="@drawable/rounded_corner_button_white"
         android:drawableStart="@drawable/ic_custom_game"
-        android:text="\tCustom Game"
+        android:text="@string/custom_game_btn"
         app:layout_constraintBottom_toTopOf="@+id/about_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -74,6 +74,7 @@
         android:id="@+id/imageView2"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:contentDescription="@string/dice_game_logo_text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

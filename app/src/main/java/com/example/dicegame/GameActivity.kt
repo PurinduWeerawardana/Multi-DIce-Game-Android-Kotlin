@@ -2,7 +2,6 @@ package com.example.dicegame
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.*
 import android.util.Log
@@ -12,8 +11,11 @@ import java.util.*
 
 @SuppressLint("UseSwitchCompatOrMaterialCode")
 class GameActivity : AppCompatActivity() {
-    private var userWins: Int = 0
-    private var robotWins: Int = 0
+    companion object {
+        private const val TAG = "GameActivity"
+        private var userWins: Int = 0
+        private var robotWins: Int = 0
+    }
     private var userDiceList = mutableListOf<UserDice>()
     private var userDiceSwitchesList = mutableListOf<Switch>()
     private var robotDiceList = mutableListOf<RobotDice>()
@@ -66,12 +68,13 @@ class GameActivity : AppCompatActivity() {
         outState.putSerializable("userDiceSwitchesList", userDiceSwitchesList as ArrayList<Switch>)
     }
 
+    @Suppress("DEPRECATION")
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         Log.i(TAG, "onRestoreInstanceState")
         userWins = savedInstanceState.getInt("userWins")
         robotWins = savedInstanceState.getInt("robotWins")
-        winCounter.text = "U: $userWins / R: $robotWins"
+        winCounter.text = resources.getString(R.string.win_counter_text, userWins, robotWins)
         userTotal = savedInstanceState.getInt("userTotal")
         userTotalText.text = userTotal.toString()
         userScore = savedInstanceState.getInt("userScore")
@@ -82,9 +85,12 @@ class GameActivity : AppCompatActivity() {
         robotScoreText.text = robotScore.toString()
         throwCount = savedInstanceState.getInt("throwCount")
         maxThrowCount = savedInstanceState.getInt("maxThrowCount")
+        if (throwCount > 0){
+            throwButton.text = getString(R.string.re_roll_btn, throwCount)
+        }
         winningScore = savedInstanceState.getInt("winningScore")
-        userWinScore.text = "/" + winningScore.toString()
-        robotWinScore.text = "/" + winningScore.toString()
+        userWinScore.text = getString(R.string.winning_score_text, winningScore)
+        robotWinScore.text = getString(R.string.winning_score_text, winningScore)
         userDiceList = savedInstanceState.getSerializable("userDiceList") as MutableList<UserDice>
         robotDiceList = savedInstanceState.getSerializable("robotDiceList") as MutableList<RobotDice>
         userDiceSwitchesList = savedInstanceState.getSerializable("userDiceSwitchesList") as MutableList<Switch>
@@ -98,11 +104,11 @@ class GameActivity : AppCompatActivity() {
         // Initialize the views
         initializeViews()
 
-        val intent: Intent = intent;
+        val intent: Intent = intent
         if (intent.hasExtra("winningScore")) {
             winningScore = intent.getIntExtra("winningScore", 101)
-            userWinScore.text = "/" + winningScore.toString()
-            robotWinScore.text = "/" + winningScore.toString()
+            userWinScore.text = getString(R.string.winning_score_text, winningScore)
+            robotWinScore.text = getString(R.string.winning_score_text, winningScore)
         }
 
         // Initialize the dice lists ans switches
@@ -121,8 +127,6 @@ class GameActivity : AppCompatActivity() {
 
         // throwButton click listener
         throwButton.setOnClickListener {
-            print(userWins)
-            print(robotWins)
             throwDices()
             showDiceImages()
             userTotal = 0
@@ -137,12 +141,12 @@ class GameActivity : AppCompatActivity() {
             robotTotalText.text = robotTotal.toString()
             if (throwCount == maxThrowCount) {
                 throwButton.isEnabled = false
-                Handler(Looper.getMainLooper()).postDelayed(Runnable {
+                Handler(Looper.getMainLooper()).postDelayed( {
                     scoreButton.performClick()
                 }, 4000)
-                Toast.makeText(this, "No more optional rolls! Score will update automatically!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.no_optional_roll_text), Toast.LENGTH_SHORT).show()
             } else{
-                throwButton.text = "Throw (${throwCount + 1})"
+                throwButton.text = getString(R.string.re_roll_btn, throwCount)
             }
         }
 
@@ -155,7 +159,7 @@ class GameActivity : AppCompatActivity() {
             userTotalText.text = userTotal.toString()
             robotTotalText.text = robotTotal.toString()
             throwCount = 0
-            throwButton.text = "Throw"
+            throwButton.text = getString(R.string.throw_btn)
             throwButton.isEnabled = true
         }
     }
@@ -185,7 +189,7 @@ class GameActivity : AppCompatActivity() {
         throwButton = findViewById(R.id.throw_button)
         scoreButton = findViewById(R.id.score_button)
         winCounter = findViewById(R.id.win_counter)
-        winCounter.text = "U: $userWins / R: $robotWins"
+        winCounter.text = getString(R.string.win_counter_text, userWins, robotWins)
     }
 
     private fun showDiceImages() {
@@ -228,15 +232,15 @@ class GameActivity : AppCompatActivity() {
         robotScore = robotScoreText.text.toString().toInt().plus(this.robotTotal)
         if (userScore < winningScore && robotScore < winningScore){
             if (throwCount == 0){
-                Toast.makeText(this, "You have to throw the dices first!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, R.string.throw_dices_first_text, Toast.LENGTH_SHORT).show()
             } else if (throwCount < maxThrowCount){
-                var finalRobotTotal: Int = 0
+                var finalRobotTotal = 0
                 for (robotDice in robotDiceList) {
                     finalRobotTotal += robotDice.getFinalDiceValue()
                 }
                 if (finalRobotTotal != this.robotTotal){
                     robotScore += finalRobotTotal-robotTotal
-                    Toast.makeText(this, "Final robot total after ${maxThrowCount-throwCount} re rolls: $finalRobotTotal", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, getString(R.string.final_robot_total_text, (maxThrowCount-throwCount), finalRobotTotal), Toast.LENGTH_LONG).show()
                 }
             }
             updateScoreUI(userScore,robotScore)
@@ -245,31 +249,31 @@ class GameActivity : AppCompatActivity() {
             maxThrowCount = 1
             if (userScore == robotScore){
                 val alertDialogBuilder = AlertDialog.Builder(this)
-                alertDialogBuilder.setTitle("Scores Tied!")
-                alertDialogBuilder.setMessage("No more optional rolls. Game will end after one player scores more than other.")
-                alertDialogBuilder.setPositiveButton("OK", null)
+                alertDialogBuilder.setTitle(R.string.scores_tied_popup_title_text)
+                alertDialogBuilder.setMessage(R.string.scores_tied_popup_msg)
+                alertDialogBuilder.setPositiveButton(R.string.positive_btn_text, null)
                 val alertDialog = alertDialogBuilder.create()
                 alertDialog.show()
             } else if (userScore > robotScore) {
                 userWins++
-                winCounter.text = "U: $userWins / R: $robotWins"
+                winCounter.text = getString(R.string.win_counter_text, userWins, robotWins)
                 val alertDialogBuilder = AlertDialog.Builder(this)
-                alertDialogBuilder.setTitle("Game Over!")
-                alertDialogBuilder.setMessage("You have won the game!")
-                alertDialogBuilder.setPositiveButton("OK", { _, _ -> this.finish() })
+                alertDialogBuilder.setTitle(R.string.game_over_popup_title_text)
+                alertDialogBuilder.setMessage(R.string.game_won_popup_msg)
+                alertDialogBuilder.setPositiveButton(R.string.positive_btn_text) { _, _ -> this.finish() }
                 val alertDialog = alertDialogBuilder.create()
                 alertDialog.show()
-                alertDialog.window?.setBackgroundDrawableResource(android.R.color.holo_green_light);
+                alertDialog.window?.setBackgroundDrawableResource(android.R.color.holo_green_light)
             } else {
                 robotWins++
-                winCounter.text = "U: $userWins / R: $robotWins"
+                winCounter.text = getString(R.string.win_counter_text, userWins, robotWins)
                 val alertDialogBuilder = AlertDialog.Builder(this)
-                alertDialogBuilder.setTitle("Game Over!")
-                alertDialogBuilder.setMessage("You have lost the game!")
-                alertDialogBuilder.setPositiveButton("OK",{ _, _ -> this.finish() })
+                alertDialogBuilder.setTitle(R.string.game_over_popup_title_text)
+                alertDialogBuilder.setMessage(getString(R.string.game_lost_popup_msg))
+                alertDialogBuilder.setPositiveButton(R.string.positive_btn_text) { _, _ -> this.finish() }
                 val alertDialog = alertDialogBuilder.create()
                 alertDialog.show()
-                alertDialog.window?.setBackgroundDrawableResource(android.R.color.holo_red_light);
+                alertDialog.window?.setBackgroundDrawableResource(android.R.color.holo_red_light)
             }
         }
         resetDices()
