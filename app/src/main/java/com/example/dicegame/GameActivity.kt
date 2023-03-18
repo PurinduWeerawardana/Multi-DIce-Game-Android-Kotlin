@@ -3,14 +3,11 @@ package com.example.dicegame
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.ContentValues.TAG
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.*
 import android.util.Log
-import android.view.KeyEvent
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import java.io.Serializable
 import java.util.*
 
 @SuppressLint("UseSwitchCompatOrMaterialCode")
@@ -88,24 +85,10 @@ class GameActivity : AppCompatActivity() {
         winningScore = savedInstanceState.getInt("winningScore")
         userWinScore.text = "/" + winningScore.toString()
         robotWinScore.text = "/" + winningScore.toString()
-        userDiceList = savedInstanceState.customGetSerializable("userDiceList")!!
-        robotDiceList = savedInstanceState.customGetSerializable("robotDiceList")!!
-        userDiceSwitchesList = savedInstanceState.customGetSerializable("userDiceSwitchesList")!!
-//        userDiceList = savedInstanceState.getSerializable("userDiceList") as MutableList<UserDice>
-//        robotDiceList = savedInstanceState.getSerializable("robotDiceList") as MutableList<RobotDice>
-//        userDiceSwitchesList = savedInstanceState.getSerializable("userDiceSwitchesList") as MutableList<Switch>
+        userDiceList = savedInstanceState.getSerializable("userDiceList") as MutableList<UserDice>
+        robotDiceList = savedInstanceState.getSerializable("robotDiceList") as MutableList<RobotDice>
+        userDiceSwitchesList = savedInstanceState.getSerializable("userDiceSwitchesList") as MutableList<Switch>
         showDiceImages()
-    }
-
-    // The "getSerializable" method is deprecated in API 33, need to use this workaround
-    // https://stackoverflow.com/questions/73388006/android-13-sdk-33-bundle-getserializablestring-is-deprecated-what-is-alter
-    @Suppress("Deprecation")
-    inline fun <reified T : Serializable> Bundle.customGetSerializable(key: String): T? {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            getSerializable(key, T::class.java)
-        } else {
-            getSerializable(key) as? T
-        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
