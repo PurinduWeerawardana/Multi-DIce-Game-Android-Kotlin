@@ -48,8 +48,17 @@ class RobotDice: Dice(1,6) {
     }
 
     /** Implementing an efficient strategy for the computer player
+     * These smart methods will use strategically according to the game score within the GameActivity.
      * Smart re-rolling based on the following rules:
-     */
+     * 1. If the dice value is less than or equal to half of the maximum dice value, re-roll the dice.
+     *      - This smart method will manually assign "true" to the doReRoll variable if the dice value is less than or equal to half of the maximum dice value.
+     *      - It won't manually assign a higher value in order  to keep the game fair.
+     *      - It will try to get a higher dice value by re-rolling for a random value.
+     *  2. If the dice value is greater than half of the maximum dice value, keep the dice value.
+     *      - This smart method will manually assign "false" to the doReRoll variable if the dice value is greater than half of the maximum dice value.
+     *      - It will keep the current dice value without rolling.
+    */
+
     fun smartReRoll() {
         if (reRollCount < maxReRollCount) {
             doReRoll = getDiceValue() <= super.getMaximumDiceValue()/2

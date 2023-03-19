@@ -13,11 +13,18 @@ import java.util.*
 
 @SuppressLint("UseSwitchCompatOrMaterialCode")
 class GameActivity : AppCompatActivity() {
+
+    /*
+    * A companion object is a singleton object that is shared between all instances of the class.
+    * It is used to store userWins and robotWins variables available to all instances of the GameActivity.
+    */
     companion object {
         private const val TAG = "GameActivity"
         private var userWins: Int = 0
         private var robotWins: Int = 0
     }
+
+    // Declare variables for the game
     private var smartRobot: Boolean = false
     private var hardMode: Boolean = false
     private var minScoreGap: Int = 0
@@ -60,11 +67,17 @@ class GameActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
 
+        // Get the intent extras
         val intent: Intent = intent
+        // Check if the intent extras contain the winning score
         if (intent.hasExtra("winningScore")) {
+            // Get the winning score from the intent extras
             winningScore = intent.getIntExtra("winningScore", 101)
         }
+
+        // Check if the intent extras contain the game mode
         if (intent.hasExtra("mode")) {
+            // Set the game mode
             if (intent.getStringExtra("mode") == "medium"){
                 smartRobot = true
                 minScoreGap = 10
@@ -173,13 +186,16 @@ class GameActivity : AppCompatActivity() {
         robotDice5.setImageResource(robotDiceList[4].getDiceImage())
     }
 
+    // throw user and robot dices
     private fun throwDices() {
+        // if it is the first throw, throw all dices without any conditions
         if (throwCount == 0){
             for (i in 0..4) {
                 userDiceList[i].rollDice()
                 robotDiceList[i].rollDice()
             }
         } else {
+            // if it is not the first throw, throw only the user dices that are not selected to keep
             for (i in 0..4) {
                 if (userDiceSwitchesList[i].isChecked) {
                     userDiceSwitchesList[i].isChecked = false
@@ -187,14 +203,29 @@ class GameActivity : AppCompatActivity() {
                     userDiceList[i].rollDice()
                 }
             }
+            // if it is not the first throw, throw the robot dices according to the conditions
             for (robotDice in robotDiceList) {
                 if (smartRobot && hardMode){
+                    /*
+                    * if the robot is smart and game is set to hard mode, it will smart re-roll all dices
+                    * refer the smartReRoll() method in ./models/RobotDice.kt for more details
+                    */
                     Log.d("Robot", "Robot is smart and hard")
                     robotDice.smartReRoll()
                 } else if (smartRobot && minScoreGap <= userScore-robotScore){
+                    /*
+                    * if the robot is smart and the score gap is met, it will smart re-roll all dices
+                    * This score gap is set to 10 by selecting the game mode to medium
+                    * Using this score gap, the robot will smart re-roll only when the user score is 10 points ahead of the robot
+                    * refer the smartReRoll() method in ./models/RobotDice.kt for more details
+                    */
                     Log.d("Robot", "Robot is smart and minScoreGap is met")
                     robotDice.smartReRoll()
                 } else {
+                    /*
+                    * if the robot is not smart, or the score gap is not met, it will re-roll all dices
+                    * refer the reRoll() method in ./models/RobotDice.kt for more details
+                    */
                     Log.d("Robot", "Robot is not smart")
                     robotDice.reRoll()
                 }
@@ -286,6 +317,9 @@ class GameActivity : AppCompatActivity() {
         Log.i(TAG, "onSaveInstanceState")
         outState.putInt("userWins", userWins)
         outState.putInt("robotWins", robotWins)
+        outState.putInt("minScoreGap", minScoreGap)
+        outState.putBoolean("smartRobot", smartRobot)
+        outState.putBoolean("hardMode", hardMode)
         outState.putInt("userTotal", userTotal)
         outState.putInt("userScore", userScore)
         outState.putInt("robotTotal", robotTotal)
@@ -304,6 +338,9 @@ class GameActivity : AppCompatActivity() {
         Log.i(TAG, "onRestoreInstanceState")
         userWins = savedInstanceState.getInt("userWins")
         robotWins = savedInstanceState.getInt("robotWins")
+        minScoreGap = savedInstanceState.getInt("minScoreGap")
+        smartRobot = savedInstanceState.getBoolean("smartRobot")
+        hardMode = savedInstanceState.getBoolean("hardMode")
         winCounter.text = resources.getString(R.string.win_counter_text, userWins, robotWins)
         userTotal = savedInstanceState.getInt("userTotal")
         userTotalText.text = userTotal.toString()
