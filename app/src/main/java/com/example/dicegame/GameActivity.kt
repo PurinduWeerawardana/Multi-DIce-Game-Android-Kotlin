@@ -143,6 +143,7 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
+    // Initialize the views and set the initial values
     private fun initializeViews() {
         userWinScore = findViewById(R.id.user_win_score)
         robotWinScore = findViewById(R.id.robot_win_score)
@@ -173,6 +174,7 @@ class GameActivity : AppCompatActivity() {
         robotWinScore.text = getString(R.string.winning_score_text, winningScore)
     }
 
+    // update the dice images on the screen based on the dice lists
     private fun showDiceImages() {
         userDice1.setImageResource(userDiceList[0].getDiceImage())
         userDice2.setImageResource(userDiceList[1].getDiceImage())
@@ -238,9 +240,12 @@ class GameActivity : AppCompatActivity() {
         userScore = userScoreText.text.toString().toInt().plus(this.userTotal)
         robotScore = robotScoreText.text.toString().toInt().plus(this.robotTotal)
         if (userScore < winningScore && robotScore < winningScore){
+            // if the user or robot score is less than the winning score, update the score
             if (throwCount == 0){
+                // if it is the first throw, show a toast message to the user to throw the dices
                 Toast.makeText(this, R.string.throw_dices_first_text, Toast.LENGTH_SHORT).show()
             } else if (throwCount < maxThrowCount){
+                // if it is not the first throw get the final Robot dice values and update the score
                 var finalRobotTotal = 0
                 for (robotDice in robotDiceList) {
                     finalRobotTotal += if (smartRobot && hardMode){
@@ -251,16 +256,22 @@ class GameActivity : AppCompatActivity() {
                         robotDice.getFinalDiceValue()
                     }
                 }
+                // if the robot score is changed, show a toast message to the user with the final robot score
                 if (finalRobotTotal != this.robotTotal){
                     robotScore += finalRobotTotal-robotTotal
                     Toast.makeText(this, getString(R.string.final_robot_total_text, (maxThrowCount-throwCount), finalRobotTotal), Toast.LENGTH_LONG).show()
                 }
             }
+            // if the user or robot score is less than the winning score, update the score and show the score on the screen
             updateScoreUI(userScore,robotScore)
         } else{
+            // if the user or robot score is greater than or equal to the winning score
             updateScoreUI(userScore,robotScore)
-            maxThrowCount = 1
             if (userScore == robotScore){
+                // if the user and robot scores are equal (game tied)
+                // set the max throw count to 0 to prevent optional re-rolls
+                maxThrowCount = 1
+                // show a popup message to the user
                 val alertDialogBuilder = AlertDialog.Builder(this)
                 alertDialogBuilder.setTitle(R.string.scores_tied_popup_title_text)
                 alertDialogBuilder.setMessage(R.string.scores_tied_popup_msg)
@@ -268,8 +279,10 @@ class GameActivity : AppCompatActivity() {
                 val alertDialog = alertDialogBuilder.create()
                 alertDialog.show()
             } else if (userScore > robotScore) {
+                // if the user score is greater than the robot score (user won)
                 userWins++
                 winCounter.text = getString(R.string.win_counter_text, userWins, robotWins)
+                // show a popup message to the user
                 val alertDialogBuilder = AlertDialog.Builder(this)
                 alertDialogBuilder.setTitle(R.string.game_over_popup_title_text)
                 alertDialogBuilder.setMessage(R.string.game_won_popup_msg)
@@ -279,8 +292,10 @@ class GameActivity : AppCompatActivity() {
                 alertDialog.show()
                 alertDialog.window?.setBackgroundDrawableResource(android.R.color.holo_green_light)
             } else {
+                // if the robot score is greater than the user score (robot won)
                 robotWins++
                 winCounter.text = getString(R.string.win_counter_text, userWins, robotWins)
+                // show a popup message to the user
                 val alertDialogBuilder = AlertDialog.Builder(this)
                 alertDialogBuilder.setTitle(R.string.game_over_popup_title_text)
                 alertDialogBuilder.setMessage(getString(R.string.game_lost_popup_msg))
@@ -294,11 +309,13 @@ class GameActivity : AppCompatActivity() {
         resetDices()
     }
 
+    // update the score on the screen
     private fun updateScoreUI(userScore: Int, robotScore: Int) {
         userScoreText.text = userScore.toString()
         robotScoreText.text = robotScore.toString()
     }
 
+    // reset the dices and keep switches to their initial state
     private fun resetDices() {
         for (i in 0..4) {
             userDiceList[i].resetDice()
@@ -312,6 +329,7 @@ class GameActivity : AppCompatActivity() {
         userDice5Switch.isChecked = false
     }
 
+    // save the current state of the game when the screen is rotated
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         Log.i(TAG, "onSaveInstanceState")
@@ -332,6 +350,7 @@ class GameActivity : AppCompatActivity() {
         outState.putSerializable("userDiceSwitchesList", userDiceSwitchesList as ArrayList<Switch>)
     }
 
+    // restore the state of the game when the screen is rotated
     @Suppress("DEPRECATION")
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
