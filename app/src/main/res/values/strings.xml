@@ -37,4 +37,5 @@
     <string name="game_over_popup_title_text">Game Over!</string>
     <string name="game_won_popup_msg">You have won the game!</string>
     <string name="game_lost_popup_msg">You have lost the game!</string>
+    <string name="default_win_score_text">101</string>
 </resources>

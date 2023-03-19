@@ -10,7 +10,6 @@ import android.widget.LinearLayout
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.Toast
-import android.widget.ToggleButton
 
 class MainActivity : AppCompatActivity() {
     private lateinit var newGameButton: Button
@@ -49,10 +48,10 @@ class MainActivity : AppCompatActivity() {
             alertDialogBuilder.setPositiveButton(R.string.positive_btn_text, null)
             alertDialogBuilder.setNegativeButton(R.string.negative_btn_text, null)
             val alertDialog = alertDialogBuilder.create()
-            alertDialog.setOnShowListener() {
+            alertDialog.setOnShowListener {
                 alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
                     if (winScoreInput.text.toString().isEmpty() || winScoreInput.text.toString().toInt() < 10) {
-                        winScoreInput.setText("101")
+                        winScoreInput.setText(getString(R.string.default_win_score_text))
                         Toast.makeText(this, R.string.custom_win_score_toast_text, Toast.LENGTH_SHORT).show()
                     } else if (!(easyOption.isChecked || hardOption.isChecked || mediumOption.isChecked)) {
                         Toast.makeText(this, R.string.custom_mode_toast_text, Toast.LENGTH_SHORT).show()
