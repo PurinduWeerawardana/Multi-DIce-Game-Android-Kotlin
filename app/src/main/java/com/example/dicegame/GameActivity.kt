@@ -7,6 +7,8 @@ import android.os.*
 import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.example.dicegame.models.RobotDice
+import com.example.dicegame.models.UserDice
 import java.util.*
 
 @SuppressLint("UseSwitchCompatOrMaterialCode")
@@ -16,6 +18,9 @@ class GameActivity : AppCompatActivity() {
         private var userWins: Int = 0
         private var robotWins: Int = 0
     }
+    private var smartRobot: Boolean = false
+    private var hardMode: Boolean = false
+    private var minScoreGap: Int = 0
     private var userDiceList = mutableListOf<UserDice>()
     private var userDiceSwitchesList = mutableListOf<Switch>()
     private var robotDiceList = mutableListOf<RobotDice>()
@@ -58,6 +63,15 @@ class GameActivity : AppCompatActivity() {
         val intent: Intent = intent
         if (intent.hasExtra("winningScore")) {
             winningScore = intent.getIntExtra("winningScore", 101)
+        }
+        if (intent.hasExtra("mode")) {
+            if (intent.getStringExtra("mode") == "medium"){
+                smartRobot = true
+                minScoreGap = 10
+            } else if (intent.getStringExtra("mode") == "hard") {
+                smartRobot = true
+                hardMode = true
+            }
         }
 
         // Initialize the views
@@ -174,13 +188,21 @@ class GameActivity : AppCompatActivity() {
                 }
             }
             for (robotDice in robotDiceList) {
-                robotDice.reRoll()
+                if (smartRobot && hardMode){
+                    Log.d("Robot", "Robot is smart and hard")
+                    robotDice.smartReRoll()
+                } else if (smartRobot && minScoreGap <= userScore-robotScore){
+                    Log.d("Robot", "Robot is smart and minScoreGap is met")
+                    robotDice.smartReRoll()
+                } else {
+                    Log.d("Robot", "Robot is not smart")
+                    robotDice.reRoll()
+                }
             }
         }
         throwCount++
     }
 
-    @SuppressLint("SetTextI18n")
     private fun updateScore() {
         userScore = userScoreText.text.toString().toInt().plus(this.userTotal)
         robotScore = robotScoreText.text.toString().toInt().plus(this.robotTotal)
@@ -190,7 +212,13 @@ class GameActivity : AppCompatActivity() {
             } else if (throwCount < maxThrowCount){
                 var finalRobotTotal = 0
                 for (robotDice in robotDiceList) {
-                    finalRobotTotal += robotDice.getFinalDiceValue()
+                    finalRobotTotal += if (smartRobot && hardMode){
+                        robotDice.getSmartFinalDiceValue()
+                    } else if (smartRobot && minScoreGap <= robotScore-userScore){
+                        robotDice.getSmartFinalDiceValue()
+                    } else {
+                        robotDice.getFinalDiceValue()
+                    }
                 }
                 if (finalRobotTotal != this.robotTotal){
                     robotScore += finalRobotTotal-robotTotal

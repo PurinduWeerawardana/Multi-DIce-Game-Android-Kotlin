@@ -1,5 +1,6 @@
-package com.example.dicegame
+package com.example.dicegame.models
 
+import com.example.dicegame.R
 import kotlin.random.Random
 
 class RobotDice: Dice(1,6) {
@@ -44,6 +45,29 @@ class RobotDice: Dice(1,6) {
     fun resetDice() {
         super.setDiceValue(0)
         reRollCount = 0
+    }
+
+    /** Implementing an efficient strategy for the computer player
+     * Smart re-rolling based on the following rules:
+     */
+    fun smartReRoll() {
+        if (reRollCount < maxReRollCount) {
+            doReRoll = getDiceValue() <= super.getMaximumDiceValue()/2
+            if (doReRoll) {
+                rollDice()
+            }
+            reRollCount++
+        }
+    }
+
+    fun getSmartFinalDiceValue(): Int {
+        if (reRollCount < maxReRollCount) {
+            smartReRoll()
+            getSmartFinalDiceValue()
+        } else {
+            reRollCount = 0
+        }
+        return getDiceValue()
     }
 
 }

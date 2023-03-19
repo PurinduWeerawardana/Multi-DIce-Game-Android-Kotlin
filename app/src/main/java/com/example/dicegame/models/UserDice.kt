@@ -1,4 +1,6 @@
-package com.example.dicegame
+package com.example.dicegame.models
+
+import com.example.dicegame.R
 
 class UserDice: Dice(1,6) {
 

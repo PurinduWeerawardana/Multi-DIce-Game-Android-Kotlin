@@ -1,4 +1,4 @@
-package com.example.dicegame
+package com.example.dicegame.models
 
 abstract class Dice(private val minDiceValue: Int = 1, private val maxDiceValue: Int = 6) {
     private var diceValue: Int = 0
@@ -12,5 +12,9 @@ abstract class Dice(private val minDiceValue: Int = 1, private val maxDiceValue:
 
     fun setDiceValue(value: Int) {
         diceValue = value
+    }
+
+    fun getMaximumDiceValue(): Int {
+        return maxDiceValue
     }
 }

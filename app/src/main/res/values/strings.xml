@@ -21,6 +21,11 @@
     <string name="zero">0</string>
     <string name="about_label_text">About</string>
     <string name="custom_win_score_prompt_text">Enter the winning score:</string>
+    <string name="custom_win_score_toast_text">Enter a winning score greater than 10.</string>
+    <string name="easy_mode">Easy</string>
+    <string name="medium_mode">Medium</string>
+    <string name="hard_mode">Hard</string>
+    <string name="custom_mode_toast_text">Please select a mode.</string>
     <string name="positive_btn_text">OK</string>
     <string name="negative_btn_text">Cancel</string>
     <string name="winning_score_text">/ %d</string>
