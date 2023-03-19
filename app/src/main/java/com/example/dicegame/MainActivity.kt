@@ -1,3 +1,7 @@
+/*
+Video demo: https://drive.google.com/file/d/1Pz8iSL5MIDRJFJ_LThrmMHQE89KFk5vz/view?usp=share_link
+ */
+
 package com.example.dicegame
 
 import android.app.AlertDialog
